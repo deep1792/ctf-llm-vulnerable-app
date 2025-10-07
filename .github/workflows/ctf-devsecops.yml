@@ -2,9 +2,9 @@ name: CTF DevSecOps Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   security-scan:
@@ -33,12 +33,12 @@ jobs:
         
     - name: Check for hardcoded secrets
       run: |
-        echo "🔍 Scanning for hardcoded secrets..."
+        echo " Scanning for hardcoded secrets..."
         if grep -r "password.*=" src/ || grep -r "secret_key.*=" src/; then
-          echo "❌ Found hardcoded secrets - this is intentional for CTF"
+          echo " Found hardcoded secrets - this is intentional for CTF"
           # Don't fail the build since this is a vulnerable app
         else
-          echo "✅ No hardcoded secrets found"
+          echo " No hardcoded secrets found"
         fi
 
   build-container:
@@ -79,9 +79,9 @@ jobs:
       run: |
         cd src
         pip install -r requirements.txt
-        echo "🧪 Testing application startup..."
+        echo " Testing application startup..."
         timeout 10s python app.py || true
-        echo "✅ Application test completed"
+        echo " Application test completed"
 
   security-report:
     name: Security Report
@@ -96,11 +96,11 @@ jobs:
         echo "==================================" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Intentional Vulnerabilities:**" >> $GITHUB_STEP_SUMMARY
-        echo "✅ SQL Injection challenges" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Command Injection challenges" >> $GITHUB_STEP_SUMMARY  
-        echo "✅ XSS challenges" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Hardcoded secrets" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Insecure deserialization" >> $GITHUB_STEP_SUMMARY
+        echo " SQL Injection challenges" >> $GITHUB_STEP_SUMMARY
+        echo " Command Injection challenges" >> $GITHUB_STEP_SUMMARY  
+        echo " XSS challenges" >> $GITHUB_STEP_SUMMARY
+        echo " Hardcoded secrets" >> $GITHUB_STEP_SUMMARY
+        echo " Insecure deserialization" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Security Tools Executed:**" >> $GITHUB_STEP_SUMMARY
         echo "- Bandit SAST" >> $GITHUB_STEP_SUMMARY
