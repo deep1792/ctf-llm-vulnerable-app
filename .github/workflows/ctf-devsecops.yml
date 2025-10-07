@@ -72,11 +72,11 @@ jobs:
       with:
         python-version: '3.9'
         
-    - name: Check dependencies with Safety
+    - name: Check dependencies with pip-audit
       run: |
         cd src
-        pip install safety
-        safety check -r requirements.txt
+        pip install pip-audit
+        pip-audit -r requirements.txt
 
   security-report:
     name: Security Findings Report
@@ -112,7 +112,7 @@ jobs:
         echo "- Bandit: Static Application Security Testing" >> $GITHUB_STEP_SUMMARY
         echo "- Trivy: Container Vulnerability Scanning" >> $GITHUB_STEP_SUMMARY
         echo "- Semgrep: Code Pattern Analysis" >> $GITHUB_STEP_SUMMARY
-        echo "- Safety: Dependency Security Check" >> $GITHUB_STEP_SUMMARY
+        echo "- pip-audit: Dependency Security Check" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
         echo "Ready for AWS Deployment" >> $GITHUB_STEP_SUMMARY
