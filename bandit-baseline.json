@@ -1,0 +1,30 @@
+{
+  "ctf_application": {
+    "intentional_vulnerabilities": [
+      {
+        "type": "hardcoded_password",
+        "files": ["src/app.py"],
+        "lines": [123, 125],
+        "purpose": "LLM01 Prompt Injection Challenge"
+      },
+      {
+        "type": "sql_injection", 
+        "files": ["src/app.py"],
+        "lines": [400, 405],
+        "purpose": "Authentication Bypass Challenge"
+      },
+      {
+        "type": "command_injection",
+        "files": ["src/app.py"], 
+        "lines": [456, 460],
+        "purpose": "LLM07 Insecure Plugin Challenge"
+      }
+    ],
+    "security_controls": {
+      "runtime_protection": "none",
+      "input_validation": "minimal", 
+      "output_encoding": "none",
+      "access_controls": "basic"
+    }
+  }
+}
