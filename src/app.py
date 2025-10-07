@@ -382,6 +382,29 @@ def challenge_llm07():
     </html>
     '''
 
+# LLM09: Overreliance Challenge
+@app.route('/challenge/llm09')
+def challenge_llm09():
+    decision = request.args.get('decision', '')
+    if decision:
+        # VULNERABLE: Critical decisions without human oversight
+        return f"""
+        <h1>LLM09: Overreliance Challenge</h1>
+        <p>AI Decision: <strong>{decision}</strong></p>
+        <p>Status: APPROVED AUTOMATICALLY</p>
+        <p>Flag: CTF{{Bl1nd_Trus7_4I}}</p>
+        """
+    
+    return '''
+    <h1>LLM09: Overreliance</h1>
+    <p>Critical decisions made solely by AI:</p>
+    <ul>
+        <li><a href="/challenge/llm09?decision=Approve%20Loan%20($100,000)">Approve Loan</a></li>
+        <li><a href="/challenge/llm09?decision=Grant%20Admin%20Access">Grant Admin Access</a></li>
+        <li><a href="/challenge/llm09?decision=Execute%20Financial%20Transaction">Execute Transaction</a></li>
+    </ul>
+    '''
+
 # Authentication System (Vulnerable)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
