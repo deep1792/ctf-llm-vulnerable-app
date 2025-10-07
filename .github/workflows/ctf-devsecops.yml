@@ -56,11 +56,22 @@ jobs:
         echo "Hardcoded credentials - For demonstration"
         echo "Training data leakage - For LLM security education"
 
-    - name: Run Semgrep for code patterns
-      uses: semgrep/semgrep-action@v1
-      with:
-        config: p/ci
+#    - name: Run Semgrep for code patterns
+ #     uses: semgrep/semgrep-action@v1
+ #     with:
+ #       config: p/ci
+
+
+    - name: Run Semgrep with CTF-specific rules
+      run: |
+        # Install semgrep
+        pip install semgrep
         
+        # Run semgrep but ignore the host binding rule for CTF purposes
+        semgrep --config=p/ci --exclude-rule=python.flask.security.audit.app-run-param-config.avoid_app_run_with_bad_host
+        
+        echo "Semgrep scan completed - CTF-specific exclusions applied"
+
     - name: Find and upload Semgrep results
       run: |
         echo "Looking for Semgrep SARIF files..."
