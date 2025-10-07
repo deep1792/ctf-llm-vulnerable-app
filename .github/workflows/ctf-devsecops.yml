@@ -59,7 +59,6 @@ jobs:
     - name: Run Semgrep for code patterns
       uses: semgrep/semgrep-action@v1
       with:
-        config: p/ci
         output: semgrep-results.sarif
         
     - name: Upload Semgrep results
