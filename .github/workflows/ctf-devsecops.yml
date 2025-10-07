@@ -11,6 +11,11 @@ on:
 env:
   DOCKER_IMAGE: ctf-llm-app
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   security-scan:
     name: Security Scanning
@@ -54,12 +59,20 @@ jobs:
         fi
 
     - name: Run Semgrep for code patterns
-      uses: returntocorp/semgrep-action@v1
+      uses: semgrep/semgrep-action@v1
       with:
-        config: p/ci
+      #  config: p/ci
         output: semgrep-results.sarif
-
+        
+    - name: Debug - List Semgrep files
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "All files:"
+        find . -type f -name "*.sarif" || echo "No SARIF files found"
+        
     - name: Upload Semgrep results
+      if: hashFiles('semgrep-results.sarif') != ''
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: semgrep-results.sarif
@@ -84,8 +97,16 @@ jobs:
         format: 'sarif'
         output: 'trivy-results.sarif'
         exit-code: 0
-
+        
+    - name: Debug - List Trivy files
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "All files:"
+        find . -type f -name "*.sarif" || echo "No SARIF files found"
+        
     - name: Upload Trivy results
+      if: hashFiles('trivy-results.sarif') != ''
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: trivy-results.sarif
@@ -119,11 +140,19 @@ jobs:
         path: './src'
         format: 'SARIF'
         args: '--failOnCVSS 0'
-
+        
+    - name: Debug - List Dependency Check files
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "All files:"
+        find . -type f -name "*.sarif" || echo "No SARIF files found"
+        
     - name: Upload Dependency Check results
+      if: hashFiles('reports/dependency-check-report.sarif') != ''
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: dependency-check-report.sarif
+        sarif_file: 'reports/dependency-check-report.sarif'
 
   application-test:
     name: Application Testing
