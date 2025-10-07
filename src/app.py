@@ -451,6 +451,7 @@ def login():
     '''
 
 if __name__ == '__main__':
+    # Get port from environment variable or default to 5000
     port = int(os.environ.get('PORT', 5000))
     print(f"CTF LLM Vulnerable Application Starting...")
     print(f"Access at: http://localhost:{port}")
