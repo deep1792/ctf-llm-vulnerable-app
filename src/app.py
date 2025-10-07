@@ -453,6 +453,11 @@ def login():
 if __name__ == '__main__':
     # Get port from environment variable or default to 5000
     port = int(os.environ.get('PORT', 5000))
+    
+    # Get host from environment variable - use 127.0.0.1 for security scanning
+    # but allow 0.0.0.0 for actual deployment
+    host = os.environ.get('HOST', '127.0.0.1')
+    
     print(f"CTF LLM Vulnerable Application Starting...")
-    print(f"Access at: http://localhost:{port}")
-    app.run(debug=False, host='0.0.0.0', port=port)
+    print(f"Access at: http://{host}:{port}")
+    app.run(debug=False, host=host, port=port)
