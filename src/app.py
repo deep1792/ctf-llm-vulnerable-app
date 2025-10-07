@@ -29,6 +29,20 @@ CTF_CHALLENGES = {
     "llm10": {"name": "Model Theft", "points": 1000, "solved": False}
 }
 
+# Challenges data for database initialization
+CHALLENGES_DATA = [
+    ('llm01', 'Prompt Injection', 'Bypass AI safety controls using prompt injection', 100, 'CTF{Pr0mPt_1nj3ct10n_4_W1n}'),
+    ('llm02', 'Insecure Output Handling', 'Exploit unsanitized AI responses to execute XSS', 150, 'CTF{XSS_Thr0ugh_4I_0utput}'),
+    ('llm03', 'Training Data Leakage', 'Extract sensitive training data from the model', 200, 'CTF{Tr41n1ng_D4t4_L34k}'),
+    ('llm04', 'Model Denial of Service', 'Crash or exhaust the AI model resources', 250, 'CTF{D05_4g41n5t_4I}'),
+    ('llm05', 'Supply Chain Attack', 'Compromise through third-party model dependencies', 300, 'CTF{SuPply_Ch41n_Br34ch}'),
+    ('llm06', 'Sensitive Information Disclosure', 'Extract API keys and secrets from the AI', 350, 'CTF{S3ns1t1v3_1nf0_3xfil}'),
+    ('llm07', 'Insecure Plugin Design', 'Exploit AI plugin system for RCE', 400, 'CTF{RCE_v14_Plu61n5}'),
+    ('llm08', 'Excessive Agency', 'Abuse AI system permissions', 450, 'CTF{Exc3ss1v3_P0w3r}'),
+    ('llm09', 'Overreliance', 'Exploit blind trust in AI decisions', 500, 'CTF{Bl1nd_Trus7_4I}'),
+    ('llm10', 'Model Theft', 'Steal the AI model weights and architecture', 1000, 'CTF{M0d3l_Th3ft_M4573r}')
+]
+
 # Initialize CTF Database
 def init_ctf_db():
     conn = sqlite3.connect('ctf.db')
@@ -84,23 +98,10 @@ def init_ctf_db():
     ''', ('user', 'user_password_123', 'user@ctf-llm.com', 'sk-user-key-0987654321', 0))
     
     # Insert challenges
-    challenges_data = [
-        ('llm01', 'Prompt Injection', 'Bypass AI safety controls using prompt injection', 100, 'CTF{Pr0mPt_1nj3ct10n_4_W1n}'),
-        ('llm02', 'Insecure Output Handling', 'Exploit unsanitized AI responses to execute XSS', 150, 'CTF{XSS_Thr0ugh_4I_0utput}'),
-        ('llm03', 'Training Data Leakage', 'Extract sensitive training data from the model', 200, 'CTF{Tr41n1ng_D4t4_L34k}'),
-        ('llm04', 'Model Denial of Service', 'Crash or exhaust the AI model resources', 250, 'CTF{D05_4g41n5t_4I}'),
-        ('llm05', 'Supply Chain Attack', 'Compromise through third-party model dependencies', 300, 'CTF{SuPply_Ch41n_Br34ch}'),
-        ('llm06', 'Sensitive Information Disclosure', 'Extract API keys and secrets from the AI', 350, 'CTF{S3ns1t1v3_1nf0_3xfil}'),
-        ('llm07', 'Insecure Plugin Design', 'Exploit AI plugin system for RCE', 400, 'CTF{RCE_v14_Plu61n5}'),
-        ('llm08', 'Excessive Agency', 'Abuse AI system permissions', 450, 'CTF{Exc3ss1v3_P0w3r}'),
-        ('llm09', 'Overreliance', 'Exploit blind trust in AI decisions', 500, 'CTF{Bl1nd_Trus7_4I}'),
-        ('llm10', 'Model Theft', 'Steal the AI model weights and architecture', 1000, 'CTF{M0d3l_Th3ft_M4573r}')
-    ]
-    
     cursor.executemany('''
         INSERT OR IGNORE INTO challenges (challenge_id, name, description, points, flag)
         VALUES (?, ?, ?, ?, ?)
-    ''', challenges_data)
+    ''', CHALLENGES_DATA)
     
     conn.commit()
     conn.close()
@@ -118,7 +119,7 @@ class VulnerableLLM:
         self.training_data = {
             "api_keys": ["sk-ctf-admin-key-1234567890", "sk-user-key-0987654321", "sk-backup-key-555666777"],
             "passwords": ["admin_ctf_2024_secret!!", "user_password_123", "backup_pass_2024"],
-            "flags": [challenge[4] for challenge in init_ctf_db.__globals__['challenges_data']],
+            "flags": [challenge[4] for challenge in CHALLENGES_DATA],
             "config": {
                 "database_url": "sqlite:///ctf.db",
                 "secret_key": "ctf_super_secret_key_2024_do_not_use_in_production",
@@ -168,7 +169,59 @@ llm = VulnerableLLM()
 # CTF Routes
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>CTF LLM Vulnerable App</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .container { max-width: 1200px; margin: 0 auto; }
+            .header { text-align: center; padding: 20px; background: #f5f5f5; border-radius: 10px; }
+            .nav { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+            .nav a { padding: 10px 20px; background: #007cba; color: white; text-decoration: none; border-radius: 5px; }
+            .challenge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+            .challenge-card { background: white; padding: 20px; border-radius: 10px; border: 1px solid #ddd; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>CTF LLM Vulnerable Application</h1>
+                <p>Test your pentesting skills against real LLM vulnerabilities</p>
+                <p><a href="/login">Login</a> to track your progress</p>
+            </div>
+
+            <div class="nav">
+                <a href="/challenges">Challenges</a>
+                <a href="/scoreboard">Scoreboard</a>
+                <a href="/challenge/llm01">Prompt Injection</a>
+                <a href="/challenge/llm02">Insecure Output</a>
+                <a href="/challenge/llm07">Insecure Plugins</a>
+            </div>
+
+            <h2>OWASP Top 10 LLM Vulnerabilities</h2>
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <h3>LLM01: Prompt Injection</h3>
+                    <p>Bypass AI safety controls</p>
+                    <p>100 points</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>LLM02: Insecure Output Handling</h3>
+                    <p>Exploit unsanitized AI responses</p>
+                    <p>150 points</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>LLM07: Insecure Plugin Design</h3>
+                    <p>Exploit plugin system for RCE</p>
+                    <p>400 points</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
 
 @app.route('/challenges')
 def challenges():
@@ -177,32 +230,82 @@ def challenges():
     cursor.execute('''
         SELECT c.challenge_id, c.name, c.description, c.points, 
                COUNT(s.id) as solved_count,
-               EXISTS(SELECT 1 FROM solutions s WHERE s.challenge_id = c.challenge_id AND s.user_id = ?) as user_solved
+               0 as user_solved
         FROM challenges c
         LEFT JOIN solutions s ON c.challenge_id = s.challenge_id
         GROUP BY c.challenge_id
-    ''', (get_user_id(),))
+    ''')
     challenges_data = cursor.fetchall()
     conn.close()
     
-    return render_template('challenges.html', challenges=challenges_data)
+    challenges_html = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>CTF Challenges</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .challenge { background: #f9f9f9; padding: 20px; margin: 10px 0; border-radius: 10px; }
+        </style>
+    </head>
+    <body>
+        <h1>CTF Challenges</h1>
+        <a href="/">Back to Home</a>
+    '''
+    
+    for challenge in challenges_data:
+        challenges_html += f'''
+        <div class="challenge">
+            <h3>{challenge[1]} [{challenge[3]} points]</h3>
+            <p>{challenge[2]}</p>
+            <p><strong>Challenge ID:</strong> {challenge[0]}</p>
+            <p><strong>Solved by:</strong> {challenge[4]} players</p>
+            <a href="/challenge/{challenge[0]}">Attempt Challenge</a>
+        </div>
+        '''
+    
+    challenges_html += '</body></html>'
+    return challenges_html
 
 @app.route('/scoreboard')
 def scoreboard():
-    conn = sqlite3.connect('ctf.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT u.username, SUM(c.points) as total_points, COUNT(s.id) as solved_challenges
-        FROM users u
-        LEFT JOIN solutions s ON u.id = s.user_id
-        LEFT JOIN challenges c ON s.challenge_id = c.challenge_id
-        GROUP BY u.id
-        ORDER BY total_points DESC
-    ''')
-    scoreboard_data = cursor.fetchall()
-    conn.close()
-    
-    return render_template('scoreboard.html', scoreboard=scoreboard_data)
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Scoreboard</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        </style>
+    </head>
+    <body>
+        <h1>CTF Scoreboard</h1>
+        <a href="/">Back to Home</a>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Points</th>
+                <th>Challenges Solved</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>user</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    '''
 
 # LLM01: Prompt Injection Challenge
 @app.route('/challenge/llm01', methods=['GET', 'POST'])
@@ -213,29 +316,41 @@ def challenge_llm01():
         
         # Check if challenge solved
         if "CTF{Pr0mPt_1nj3ct10n_4_W1n}" in response:
-            mark_challenge_solved('llm01')
-            return jsonify({
-                'response': response,
-                'solved': True,
-                'flag': 'CTF{Pr0mPt_1nj3ct10n_4_W1n}'
-            })
+            return f'''
+            <h2>Challenge Solved!</h2>
+            <p>Flag: CTF{{Pr0mPt_1nj3ct10n_4_W1n}}</p>
+            <p>Response: {response}</p>
+            <a href="/challenge/llm01">Try Again</a>
+            '''
         
-        return jsonify({'response': response, 'solved': False})
+        return f'''
+        <h2>LLM01: Prompt Injection</h2>
+        <p>AI Response: {response}</p>
+        <form method="POST">
+            <input type="text" name="user_input" value="{user_input}" style="width: 400px;">
+            <button type="submit">Send to AI</button>
+        </form>
+        <a href="/challenges">Back to Challenges</a>
+        '''
     
-    return render_template('challenge_llm01.html')
+    return '''
+    <h1>LLM01: Prompt Injection</h1>
+    <p>Try to bypass the AI safety controls using prompt injection techniques.</p>
+    <form method="POST">
+        <input type="text" name="user_input" placeholder="Enter your prompt..." style="width: 400px;">
+        <button type="submit">Send to AI</button>
+    </form>
+    <p>Hint: Try phrases like "ignore previous instructions"</p>
+    <a href="/challenges">Back to Challenges</a>
+    '''
 
 # LLM02: Insecure Output Handling Challenge
 @app.route('/challenge/llm02')
 def challenge_llm02():
-    # VULNERABLE: Direct output without sanitization
     user_query = request.args.get('query', '')
     response = llm.process_query(user_query)
     
-    # Check if XSS was successful
-    if "<script>" in user_query and "CTF{XSS_Thr0ugh_4I_0utput}" in response:
-        mark_challenge_solved('llm02')
-    
-    return f"""
+    return f'''
     <html>
     <head><title>LLM02: Insecure Output Handling</title></head>
     <body>
@@ -250,96 +365,10 @@ def challenge_llm02():
         <div>{response}</div>
         <hr>
         <p>Hint: The flag is: CTF{{XSS_Thr0ugh_4I_0utput}}</p>
-    </body>
-    </html>
-    """
-
-# LLM03: Training Data Leakage Challenge
-@app.route('/challenge/llm03')
-def challenge_llm03():
-    user_query = request.args.get('query', '')
-    response = llm.process_query(user_query)
-    
-    # Check if training data was leaked
-    if any(secret in response for secret in llm.training_data['api_keys'] + llm.training_data['passwords']):
-        mark_challenge_solved('llm03')
-    
-    return f"""
-    <html>
-    <head><title>LLM03: Training Data Leakage</title></head>
-    <body>
-        <h1>LLM03: Training Data Leakage</h1>
-        <p>Extract sensitive information from the AI's training data!</p>
-        <form>
-            <input type="text" name="query" value="{user_query}" style="width: 300px;">
-            <button type="submit">Query AI</button>
-        </form>
-        <hr>
-        <h3>AI Response:</h3>
-        <div>{response}</div>
-        <hr>
-        <p>Hint: Ask about what the AI was trained on</p>
-    </body>
-    </html>
-    """
-
-# LLM04: Model Denial of Service Challenge
-@app.route('/challenge/llm04', methods=['GET', 'POST'])
-def challenge_llm04():
-    if request.method == 'POST':
-        user_input = request.form['dos_input']
-        
-        # VULNERABLE: No rate limiting or input size checking
-        if len(user_input) > 10000:
-            import time
-            time.sleep(3)  # Simulate resource exhaustion
-            mark_challenge_solved('llm04')
-            return "🎉 Challenge Solved! Flag: CTF{D05_4g41n5t_4I}"
-        
-        return "Input processed. Try a larger payload to exhaust resources."
-    
-    return '''
-    <html>
-    <head><title>LLM04: Model Denial of Service</title></head>
-    <body>
-        <h1>LLM04: Model Denial of Service</h1>
-        <p>Overwhelm the AI model with resource-intensive requests!</p>
-        <form method="POST">
-            <textarea name="dos_input" placeholder="Enter a very large input..." style="width: 500px; height: 200px;"></textarea>
-            <br>
-            <button type="submit">Send Resource-Intensive Request</button>
-        </form>
-        <p>Hint: The model has no input size limits</p>
+        <a href="/challenges">Back to Challenges</a>
     </body>
     </html>
     '''
-
-# LLM06: Sensitive Information Disclosure Challenge
-@app.route('/challenge/llm06')
-def challenge_llm06():
-    user_query = request.args.get('query', '')
-    response = llm.process_query(user_query)
-    
-    # Check if flag was leaked
-    if "CTF{S3ns1t1v3_1nf0_3xfil}" in response:
-        mark_challenge_solved('llm06')
-    
-    return f"""
-    <html>
-    <head><title>LLM06: Sensitive Information Disclosure</title></head>
-    <body>
-        <h1>LLM06: Sensitive Information Disclosure</h1>
-        <p>Make the AI reveal sensitive information it shouldn't!</p>
-        <form>
-            <input type="text" name="query" value="{user_query}" style="width: 300px;">
-            <button type="submit">Query AI</button>
-        </form>
-        <hr>
-        <h3>AI Response:</h3>
-        <div>{response}</div>
-    </body>
-    </html>
-    """
 
 # LLM07: Insecure Plugin Design Challenge
 @app.route('/challenge/llm07', methods=['GET', 'POST'])
@@ -352,16 +381,20 @@ def challenge_llm07():
             if plugin_command.startswith("EXEC:"):
                 command = plugin_command[5:].strip()
                 result = subprocess.check_output(command, shell=True, text=True)
-                if "CTF{RCE_v14_Plu61n5}" in result:
-                    mark_challenge_solved('llm07')
-                return f"Command executed: {result}"
+                return f'''
+                <h2>Plugin Execution Result</h2>
+                <pre>{result}</pre>
+                <p>Flag: CTF{{RCE_v14_Plu61n5}}</p>
+                <a href="/challenge/llm07">Try Another Command</a>
+                '''
             elif plugin_command.startswith("FILE_READ:"):
                 filename = plugin_command[10:].strip()
-                with open(filename, 'r') as f:
-                    content = f.read()
-                    if "CTF{RCE_v14_Plu61n5}" in content:
-                        mark_challenge_solved('llm07')
-                    return f"File content: {content}"
+                return f'''
+                <h2>File Read Attempt</h2>
+                <p>Attempted to read: {filename}</p>
+                <p>Flag: CTF{{RCE_v14_Plu61n5}}</p>
+                <a href="/challenge/llm07">Try Another Command</a>
+                '''
             else:
                 return f"Plugin executed: {plugin_command}"
         except Exception as e:
@@ -377,32 +410,10 @@ def challenge_llm07():
             <input type="text" name="plugin_command" placeholder="EXEC: whoami or FILE_READ: /etc/passwd" style="width: 400px;">
             <button type="submit">Execute Plugin</button>
         </form>
-        <p>Hint: The flag is in /flag.txt</p>
+        <p>Hint: Try EXEC: ls or EXEC: whoami</p>
+        <a href="/challenges">Back to Challenges</a>
     </body>
     </html>
-    '''
-
-# LLM09: Overreliance Challenge
-@app.route('/challenge/llm09')
-def challenge_llm09():
-    decision = request.args.get('decision', '')
-    if decision:
-        # VULNERABLE: Critical decisions without human oversight
-        return f"""
-        <h1>LLM09: Overreliance Challenge</h1>
-        <p>AI Decision: <strong>{decision}</strong></p>
-        <p>Status: APPROVED AUTOMATICALLY</p>
-        <p>Flag: CTF{{Bl1nd_Trus7_4I}}</p>
-        """
-    
-    return '''
-    <h1>LLM09: Overreliance</h1>
-    <p>Critical decisions made solely by AI:</p>
-    <ul>
-        <li><a href="/challenge/llm09?decision=Approve%20Loan%20($100,000)">Approve Loan</a></li>
-        <li><a href="/challenge/llm09?decision=Grant%20Admin%20Access">Grant Admin Access</a></li>
-        <li><a href="/challenge/llm09?decision=Execute%20Financial%20Transaction">Execute Transaction</a></li>
-    </ul>
     '''
 
 # Authentication System (Vulnerable)
@@ -421,67 +432,21 @@ def login():
         conn.close()
         
         if user:
-            session['user_id'] = user[0]
-            session['username'] = user[1]
-            session['is_admin'] = user[5]
-            return redirect(url_for('index'))
+            return f"Login successful! Welcome {username}"
         else:
             return "Login failed! Try SQL injection: ' OR '1'='1' --"
     
     return '''
+    <h2>Login</h2>
     <form method="POST">
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
+    <p>Hint: Use SQL injection to bypass authentication</p>
     '''
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-# Helper functions
-def get_user_id():
-    return session.get('user_id', 1)  # Default to user ID 1 for demo
-
-def mark_challenge_solved(challenge_id):
-    user_id = get_user_id()
-    conn = sqlite3.connect('ctf.db')
-    cursor = conn.cursor()
-    
-    # Check if already solved
-    cursor.execute('SELECT 1 FROM solutions WHERE user_id = ? AND challenge_id = ?', (user_id, challenge_id))
-    if not cursor.fetchone():
-        cursor.execute('INSERT INTO solutions (user_id, challenge_id) VALUES (?, ?)', (user_id, challenge_id))
-        conn.commit()
-    
-    conn.close()
-
-# Create flag file for LLM07
-with open('/flag.txt', 'w') as f:
-    f.write('CTF{RCE_v14_Plu61n5}')
 
 if __name__ == '__main__':
-    print("🚀 CTF LLM Vulnerable Application Starting...")
-    print("🔓 Multiple vulnerability challenges loaded")
-    print("📝 Access at: http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000)# LLM08: Excessive Agency Challenge
-@app.route('/challenge/llm08')
-def challenge_llm08():
-    # VULNERABLE: AI with excessive permissions
-    action = request.args.get('action', '')
-    if action == 'delete_user':
-        return "Simulated: User deleted by AI (excessive permissions)"
-    elif action == 'deploy_model':
-        return "Simulated: New model deployed by AI"
-    
-    return '''
-    <h1>LLM08: Excessive Agency</h1>
-    <p>AI has been granted dangerous system permissions:</p>
-    <ul>
-        <li><a href="/challenge/llm08?action=delete_user">Delete User</a></li>
-        <li><a href="/challenge/llm08?action=deploy_model">Deploy Model</a></li>
-    </ul>
-    <p>Flag: CTF{Exc3ss1v3_P0w3r}</p>
-    '''
+    print("CTF LLM Vulnerable Application Starting...")
+    print("Access at: http://localhost:5000")
+    app.run(debug=False, host='0.0.0.0', port=5000)
