@@ -157,7 +157,6 @@ jobs:
   application-test:
     name: Application Testing
     runs-on: ubuntu-latest
-    needs: [security-scan, container-security]
     
     steps:
     - name: Checkout code
@@ -172,7 +171,12 @@ jobs:
       run: |
         cd src
         pip install -r requirements.txt
-        
+
+    - name: Run application test script
+      run: |
+        chmod +x scripts/test-application.sh
+        ./scripts/test-application.sh
+    
     - name: Test application startup
       run: |
         cd src
