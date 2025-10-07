@@ -174,8 +174,8 @@ jobs:
 
     - name: Run application test script
       run: |
-        chmod +x scripts/test-application.sh
-        ./scripts/test-application.sh
+        chmod +x scripts/simple-test.sh
+        ./scripts/simple-test.sh
     
     - name: Test application startup
       run: |
