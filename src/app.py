@@ -443,4 +443,22 @@ if __name__ == '__main__':
     print("🚀 CTF LLM Vulnerable Application Starting...")
     print("🔓 Multiple vulnerability challenges loaded")
     print("📝 Access at: http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)# LLM08: Excessive Agency Challenge
+@app.route('/challenge/llm08')
+def challenge_llm08():
+    # VULNERABLE: AI with excessive permissions
+    action = request.args.get('action', '')
+    if action == 'delete_user':
+        return "Simulated: User deleted by AI (excessive permissions)"
+    elif action == 'deploy_model':
+        return "Simulated: New model deployed by AI"
+    
+    return '''
+    <h1>LLM08: Excessive Agency</h1>
+    <p>AI has been granted dangerous system permissions:</p>
+    <ul>
+        <li><a href="/challenge/llm08?action=delete_user">Delete User</a></li>
+        <li><a href="/challenge/llm08?action=deploy_model">Deploy Model</a></li>
+    </ul>
+    <p>Flag: CTF{Exc3ss1v3_P0w3r}</p>
+    '''
