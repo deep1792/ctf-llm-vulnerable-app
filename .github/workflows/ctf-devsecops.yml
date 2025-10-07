@@ -55,7 +55,7 @@ jobs:
         fi
 
     - name: Run Semgrep for advanced patterns
-      uses: returntocorp/semgrep-action@v1
+      uses: semgrep/semgrep-action@v1
       with:
         config: p/ci
         output: semgrep-results.sarif
