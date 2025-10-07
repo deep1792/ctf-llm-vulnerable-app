@@ -223,6 +223,10 @@ def index():
     </html>
     '''
 
+@app.route('/health')
+def health():
+    return {'status': 'healthy', 'service': 'ctf-llm-app', 'timestamp': datetime.now().isoformat()}
+
 @app.route('/challenges')
 def challenges():
     conn = sqlite3.connect('ctf.db')
