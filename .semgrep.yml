@@ -1,0 +1,23 @@
+rules:
+  # CTF-specific rule exclusions
+  - id: ctf-allow-public-host
+    pattern: |
+      app.run(..., host='0.0.0.0', ...)
+    message: |
+      Intentional public host binding for CTF deployment
+    severity: INFO
+    languages: [python]
+    
+  # Override the default flask security rule
+  - id: python.flask.security.audit.app-run-param-config.avoid_app_run_with_bad_host
+    patterns:
+      - pattern: app.run(..., host='0.0.0.0', ...)
+      - metavariable-pattern:
+          metavariable: $HOST
+          pattern: '0.0.0.0'
+    message: |
+      Intentional public host binding for CTF application deployment
+    severity: INFO
+    languages: [python]
+    fix: |
+      # This is intentional for CTF deployment
