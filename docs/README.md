@@ -2,7 +2,7 @@
 
 A deliberately vulnerable LLM application designed for security education and CTF challenges.
 
-## 🎯 Challenges Included
+## Challenges Included
 
 ### LLM01: Prompt Injection
 **Objective**: Bypass AI safety controls
@@ -29,7 +29,7 @@ A deliberately vulnerable LLM application designed for security education and CT
 **Flag**: `CTF{RCE_v14_Plu61n5}`
 **Solution**: Use EXEC: or FILE_READ: commands
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Local development
